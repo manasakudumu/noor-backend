@@ -80,9 +80,31 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
-  //
-  // ...
-  //
+  // my concepts (monitoring and alerting)
+  {
+    name: "Get Monitoring Status",
+    endpoint: "/api/monitoring",
+    method: "GET",
+    fields: {},
+  },
+  {
+    name: "Check In User",
+    endpoint: "/api/monitoring/checkin",
+    method: "POST",
+    fields: {},
+  },
+  {
+    name: "Activate Emergency Alert",
+    endpoint: "/api/alerting",
+    method: "POST",
+    fields: { location: "input" },
+  },
+  {
+    name: "Deactivate Emergency Alert",
+    endpoint: "/api/alerting/deactivate",
+    method: "POST",
+    fields: {},
+  },
 ];
 
 /*
