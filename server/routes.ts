@@ -199,7 +199,41 @@ async updateLocation(session: SessionDoc, location: string) {
   return await Monitoring.alertContacts(user); 
 }
 
+//rest of the concepts 
+  @Router.post("/comments/:itemId")
+  async commentOnItem(itemId: string, comment: string) {
+  // Comment on an item (post/message)
+  }
 
+  @Router.delete("/comments/:commentId")
+  async deleteComment(commentId: string) {
+    // Delete a specific comment
+  }
+
+  @Router.post("/filtering/apply")
+  async applyFilter(userId: string, settings: object) {
+    // Apply filter rule
+  }
+
+  @Router.get("/filtering/:userId")
+  async getFilterSettings(userId: string) {
+    // Fetch all applied filter rules for a user
+  }
+
+  @Router.delete("/filtering/remove")
+  async removeFilter(userId: string, ruleId: string) {
+    // Remove a filter rule from the user's settings
+  }
+
+  @Router.post("/reading/label")
+  async labelElement(elementId: string, label: string) {
+    // Label a UI element for screen readers
+  }
+
+  @Router.post("/reading/summary/:postId")
+  async generateSummary(postId: string) {
+    // Generate a summary for a post
+  }
 }
 
 /** The web app. */
