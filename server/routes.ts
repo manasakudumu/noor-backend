@@ -152,6 +152,47 @@ class Routes {
     const fromOid = (await Authing.getUserByUsername(from))._id;
     return await Friending.rejectRequest(fromOid, user);
   }
+
+  @Router.get("/comments/:itemId")
+  async getComments(itemId: string) {
+    // Fetch comments on a specific item
+  }
+
+  @Router.post("/comments/:itemId")
+  async postComment(session: SessionDoc, itemId: string, content: string) {
+  // Post a new comment on an item
+  }
+
+  @Router.patch("/comments/:commentId")
+  async editComment(session: SessionDoc, commentId: string, newContent: string) {
+  // Update a comment's content
+  }
+  
+  @Router.delete("/comments/:commentId")
+  async deleteComment(session: SessionDoc, commentId: string) {
+  // Delete a comment by its ID
+  }
+
+  @Router.get("/checkins")
+  async getCheckinStatus(session: SessionDoc) {
+  // Fetch the user's check-in status
+  }
+
+  @Router.post("/checkins")
+  async performCheckin(session: SessionDoc) {
+  // Record the user's check-in
+  }
+
+  @Router.post("/checkins/schedule")
+  async scheduleCheckin(session: SessionDoc, time: string) {
+  // Schedule a new check-in for the user at a specified time
+  }
+
+  @Router.post("/checkins/alert")
+  async sendAlert(session: SessionDoc) {
+  // Trigger an alert due to a missed check-in
+  }
+
 }
 
 /** The web app. */
