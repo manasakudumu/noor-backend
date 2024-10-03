@@ -1,57 +1,64 @@
 import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotFoundError } from "./errors";
+import { NotAllowedError, NotFoundError } from "./errors";
 
-export interface MonitoringDoc extends BaseDoc {
+export interface CheckInScheduleDoc extends BaseDoc {
   userId: ObjectId;
-  checkInStatus: boolean;
-  lastCheckIn: Date;
-  trustedContacts: ObjectId[];
+  schedule: Date;
+}
+
+export interface UserCheckInStatusDoc extends BaseDoc {
+  userId: ObjectId;
+  status: boolean;
 }
 
 /**
- * concept: Monitoring
+ * concept: Monitoring [User]
  */
 export default class MonitoringConcept {
-    public readonly monitoring: DocCollection<MonitoringDoc>;
-  
-    /**
-     * Make an instance of Monitoring.
-     */
-    constructor(collectionName: string) {
-      this.monitoring = new DocCollection<MonitoringDoc>(collectionName);
-    }
-  
-    async createMonitoring(userId: ObjectId, trustedContacts: ObjectId[]) {
-      const _id = await this.monitoring.createOne({ userId, checkInStatus: false, lastCheckIn: new Date(), trustedContacts });
-      return { msg: "Monitoring setup created successfully!", monitoring: await this.monitoring.readOne({ _id }) };
-    }
-  
-    async checkIn(userId: ObjectId) {
-      const monitoring = await this.monitoring.readOne({ userId });
-      if (!monitoring) {
-        throw new NotFoundError("Monitoring setup not found!");
-      }
-  
-      await this.monitoring.partialUpdateOne({ userId }, { checkInStatus: true, lastCheckIn: new Date() });
-      return { msg: "User checked in successfully!" };
-    }
-  
-    async getTrustedContacts(userId: ObjectId) {
-      const monitoring = await this.monitoring.readOne({ userId });
-      if (!monitoring) {
-        throw new NotFoundError("Monitoring setup not found!");
-      }
-      return monitoring.trustedContacts;
-    }
-  
-    async updateTrustedContacts(userId: ObjectId, contacts: ObjectId[]) {
-      await this.monitoring.partialUpdateOne({ userId }, { trustedContacts: contacts });
-      return { msg: "Trusted contacts updated successfully!" };
-    }
-  
-    async deleteMonitoring(userId: ObjectId) {
-      await this.monitoring.deleteOne({ userId });
-      return { msg: "Monitoring setup deleted!" };
-    }
+  public readonly checkInSchedules: DocCollection<CheckInScheduleDoc>;
+  public readonly checkInStatus: DocCollection<UserCheckInStatusDoc>;
+
+  constructor(collectionName: string) {
+    this.checkInSchedules = new DocCollection<CheckInScheduleDoc>(collectionName + "_schedules");
+    this.checkInStatus = new DocCollection<UserCheckInStatusDoc>(collectionName + "_status");
   }
+
+  // Schedule a check-in for a user
+  async scheduleCheckIn(userId: ObjectId, schedule: Date) {
+    const existing = await this.checkInSchedules.readOne({ userId });
+    if (existing !== null) {
+      throw new NotAllowedError("User already has a scheduled check-in.");
+    }
+    await this.checkInSchedules.createOne({ userId, schedule });
+    return { msg: "Check-in scheduled successfully!" };
+  }
+
+  // Record a check-in for a user
+  async recordCheckIn(userId: ObjectId) {
+    const checkIn = await this.checkInSchedules.readOne({ userId });
+    if (!checkIn) {
+      throw new NotFoundError("No check-in schedule found for user.");
+    }
+    await this.checkInStatus.createOne({ userId, status: true });
+    return { msg: "User check-in recorded successfully!" };
+  }
+
+  // Get check-in status
+  async getCheckInStatus(userId: ObjectId) {
+    const status = await this.checkInStatus.readOne({ userId });
+    if (!status) {
+      throw new NotFoundError("No check-in status found for user.");
+    }
+    return status;
+  }
+
+  // Alert trusted contacts if no check-in was recorded
+  async alertContacts(userId: ObjectId) {
+    const status = await this.checkInStatus.readOne({ userId });
+    if (!status || !status.status) {
+      return { msg: "Alerting trusted contacts!" };
+    }
+    return { msg: "No alerts needed. User checked in successfully." };
+  }
+}
