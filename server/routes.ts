@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Alerting, Authing, Friending, Monitoring, Posting, Sessioning } from "./app";
+import { Authing, Friending, Posting, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -153,87 +153,6 @@ class Routes {
     return await Friending.rejectRequest(fromOid, user);
   }
 
-  //alerting
-  //alerting
-  @Router.post("/alert")
-  async activateEmergencyAlert(session: SessionDoc, location: string) {
-  const user = Sessioning.getUser(session);
-  return await Alerting.activateEmergencyAlert(user, location);
-}
-
-  @Router.post("/alert/deactivate")
-  async deactivateEmergencyAlert(session: SessionDoc) {
-  const user = Sessioning.getUser(session); 
-  return await Alerting.deactivateEmergencyAlert(user);
-}
-
-@Router.patch("/alert/location")
-async updateLocation(session: SessionDoc, location: string) {
-  const user = Sessioning.getUser(session);
-  return await Alerting.updateLocation(user, location);
-}
-
-//monitoring
-  @Router.get("/monitoring/status")
-  async getMonitoringStatus(session: SessionDoc) {
-  const user = Sessioning.getUser(session); 
-  return await Monitoring.getCheckInStatus(user); 
-}
-
-  @Router.post("/monitoring/checkin")
-  async performCheckin(session: SessionDoc) {
-  const user = Sessioning.getUser(session); 
-  return await Monitoring.recordCheckIn(user); 
-}
-
-    @Router.post("/monitoring/checkin/schedule")
-  async scheduleCheckin(session: SessionDoc, scheduleTime: string) {
-  const user = Sessioning.getUser(session); 
-  const date = new Date(scheduleTime); 
-  return await Monitoring.scheduleCheckIn(user, date); 
-}
-
-  @Router.post("/monitoring/alert")
-  async sendAlert(session: SessionDoc) {
-  const user = Sessioning.getUser(session); 
-  return await Monitoring.alertContacts(user); 
-}
-
-//rest of the concepts 
-  @Router.post("/comments/:itemId")
-  async commentOnItem(itemId: string, comment: string) {
-  // Comment on an item (post/message)
-  }
-
-  @Router.delete("/comments/:commentId")
-  async deleteComment(commentId: string) {
-    // Delete a specific comment
-  }
-
-  @Router.post("/filtering/apply")
-  async applyFilter(userId: string, settings: object) {
-    // Apply filter rule
-  }
-
-  @Router.get("/filtering/:userId")
-  async getFilterSettings(userId: string) {
-    // Fetch all applied filter rules for a user
-  }
-
-  @Router.delete("/filtering/remove")
-  async removeFilter(userId: string, ruleId: string) {
-    // Remove a filter rule from the user's settings
-  }
-
-  @Router.post("/reading/label")
-  async labelElement(elementId: string, label: string) {
-    // Label a UI element for screen readers
-  }
-
-  @Router.post("/reading/summary/:postId")
-  async generateSummary(postId: string) {
-    // Generate a summary for a post
-  }
 }
 
 /** The web app. */
