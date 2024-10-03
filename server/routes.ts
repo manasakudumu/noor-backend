@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Posting, Sessioning } from "./app";
+import { Alerting, Authing, Friending, Monitoring, Posting, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -151,6 +151,57 @@ class Routes {
     const user = Sessioning.getUser(session);
     const fromOid = (await Authing.getUserByUsername(from))._id;
     return await Friending.rejectRequest(fromOid, user);
+  }
+
+    //alerting
+  @Router.post("/alert")
+  async activateEmergencyAlert(session: SessionDoc, location: string) {
+  const user = Sessioning.getUser(session);
+  return await Alerting.activateEmergencyAlert(user, location);
+  }
+
+
+  @Router.post("/alert/deactivate")
+  async deactivateEmergencyAlert(session: SessionDoc) {
+  const user = Sessioning.getUser(session);
+  return await Alerting.deactivateEmergencyAlert(user);
+  }
+
+
+  @Router.patch("/alert/location")
+  async updateLocation(session: SessionDoc, location: string) {
+  const user = Sessioning.getUser(session);
+  return await Alerting.updateLocation(user, location);
+  }
+
+
+  //monitoring
+  @Router.get("/monitoring/status")
+  async getMonitoringStatus(session: SessionDoc) {
+  const user = Sessioning.getUser(session);
+  return await Monitoring.getCheckInStatus(user);
+  }
+
+
+  @Router.post("/monitoring/checkin")
+  async performCheckin(session: SessionDoc) {
+  const user = Sessioning.getUser(session);
+  return await Monitoring.recordCheckIn(user);
+  }
+
+
+    @Router.post("/monitoring/checkin/schedule")
+  async scheduleCheckin(session: SessionDoc, scheduleTime: string) {
+  const user = Sessioning.getUser(session);
+  const date = new Date(scheduleTime);
+  return await Monitoring.scheduleCheckIn(user, date);
+  }
+
+
+  @Router.post("/monitoring/alert")
+  async sendAlert(session: SessionDoc) {
+  const user = Sessioning.getUser(session);
+  return await Monitoring.alertContacts(user);
   }
 
     //rest of the concepts
