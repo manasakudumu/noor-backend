@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Monitoring, Posting, Sessioning } from "./app";
+import { Authing, Friending, Posting, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -153,35 +153,6 @@ class Routes {
     return await Friending.rejectRequest(fromOid, user);
   }
   
-  //monitoring
-  @Router.get("/monitoring/status")
-  async getMonitoringStatus(session: SessionDoc) {
-  const user = Sessioning.getUser(session);
-  return await Monitoring.getCheckInStatus(user);
-  }
-
-
-  @Router.post("/monitoring/checkin")
-  async performCheckin(session: SessionDoc) {
-  const user = Sessioning.getUser(session);
-  return await Monitoring.recordCheckIn(user);
-  }
-
-
-    @Router.post("/monitoring/checkin/schedule")
-  async scheduleCheckin(session: SessionDoc, scheduleTime: string) {
-  const user = Sessioning.getUser(session);
-  const date = new Date(scheduleTime);
-  return await Monitoring.scheduleCheckIn(user, date);
-  }
-
-
-  @Router.post("/monitoring/alert")
-  async sendAlert(session: SessionDoc) {
-  const user = Sessioning.getUser(session);
-  return await Monitoring.alertContacts(user);
-  }
-
     //rest of the concepts
   @Router.post("/comments/:itemId")
   async commentOnItem(itemId: string, comment: string) {
