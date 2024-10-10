@@ -24,10 +24,10 @@ export default class AuthenticatingConcept {
     void this.users.collection.createIndex({ username: 1 });
   }
 
-  async create(username: string, password: string, captcha: string) {
+  async create(username: string, password: string) {
     // CAPTCHA check before proceeding to user creation
-    await this.assertGoodCredentials(username, password, captcha);
-    const _id = await this.users.createOne({ username, password, captcha });
+    await this.assertGoodCredentials(username, password);
+    const _id = await this.users.createOne({ username, password });
     return { msg: "User created successfully!", user: await this.users.readOne({ _id }) };
   }
 
@@ -103,12 +103,12 @@ export default class AuthenticatingConcept {
     }
   }
 
-  private async assertGoodCredentials(username: string, password: string, captcha: string) {
-    if (!username || !password || !captcha) {
+  private async assertGoodCredentials(username: string, password: string) {
+    if (!username || !password) {
       throw new BadValuesError("Username, password, and CAPTCHA must be non-empty!");
     }
     await this.assertUsernameUnique(username);
-    await this.assertCaptchaValid(captcha);
+    
   }
 
   private async assertUsernameUnique(username: string) {
