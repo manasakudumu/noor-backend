@@ -15,5 +15,8 @@
     "baseUrl": "./",
     "outDir": "../dist-server/",
   },
+  "parserOptions": {
+   "project": "./tsconfig.json"
+  },
   "include": ["./**/*.ts", "../public/*.ts", "../test/*.ts", "../api/index.ts"],
 }
