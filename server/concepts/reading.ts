@@ -42,7 +42,6 @@ export default class ReadingConcept {
     }
   }
 
-
   // Get the label of an element
   async getLabel(elementId: string) {
     const element = await this.content.readOne({ elementId });
