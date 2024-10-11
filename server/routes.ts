@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Alerting, Authing, Friending, Monitoring, Posting, Sessioning, Messaging } from "./app";
+import { Alerting, Authing, Friending, Messaging, Monitoring, Posting, Reading, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -155,7 +155,6 @@ class Routes {
   }
 
   // Monitoring Routes
-
   @Router.get("/monitoring/status")
   async getMonitoringStatus(session: SessionDoc) {
     const user = Sessioning.getUser(session);
@@ -183,9 +182,9 @@ class Routes {
 
   // Alerting Routes
   @Router.post("/alert")
-  async activateEmergencyAlert(session: SessionDoc, location: string) {
+  async activateEmergencyAlert(session: SessionDoc) {
     const user = Sessioning.getUser(session);
-    return await Alerting.activateEmergencyAlert(user, location);
+    return await Alerting.activateEmergencyAlert(user);
   }
 
   @Router.post("/alert/deactivate")
@@ -194,14 +193,7 @@ class Routes {
     return await Alerting.deactivateEmergencyAlert(user);
   }
 
-  @Router.patch("/alert/location")
-  async updateLocation(session: SessionDoc, newLocation: string) {
-    const user = Sessioning.getUser(session);
-    return await Alerting.updateLocation(user, newLocation);
-  }
-
   // Messaging Routes
-
   @Router.post("/messages/send")
   async sendMessage(session: SessionDoc, receiver: string, content: string) {
     const sender = Sessioning.getUser(session);
@@ -225,16 +217,32 @@ class Routes {
 
   @Router.delete("/messages/:id")
   async deleteMessage(session: SessionDoc, id: string) {
-    const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
     await Messaging.deleteMessage(oid);
     return { msg: "Message deleted!" };
   }
 
+  // Reading Routes
+  @Router.post("/reading/label")
+  async labelElement(session: SessionDoc, elementId: string, label: string) {
+    const user = Sessioning.getUser(session);
+    return await Reading.labelElement(elementId, label);
+  }
+
+  @Router.get("/reading/label/:elementId")
+  async getLabel(session: SessionDoc, elementId: string) {
+    return await Reading.getLabel(elementId);
+  }
+
+  @Router.delete("/reading/label/:elementId")
+  async removeLabel(session: SessionDoc, elementId: string) {
+    return await Reading.removeLabel(elementId);
+  }
 }
 
 /** The web app. */
 export const app = new Routes();
+
 
 /** The Express router. */
 export const appRouter = getExpressRouter(app);

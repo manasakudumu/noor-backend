@@ -81,9 +81,10 @@ const operations: Operation[] = [
     fields: { id: "input" },
   },
   // my concepts (monitoring and alerting)
+  // Monitoring Concept Routes
   {
     name: "Get Monitoring Status",
-    endpoint: "/api/monitoring",
+    endpoint: "/api/monitoring/status",
     method: "GET",
     fields: {},
   },
@@ -93,6 +94,13 @@ const operations: Operation[] = [
     method: "POST",
     fields: {},
   },
+  {
+    name: "Schedule Check-in",
+    endpoint: "/api/monitoring/checkin/schedule",
+    method: "POST",
+    fields: { scheduleTime: "input" },
+  },
+  // Alerting Concept Routes
   {
     name: "Activate Emergency Alert",
     endpoint: "/api/alerting",
@@ -105,6 +113,52 @@ const operations: Operation[] = [
     method: "POST",
     fields: {},
   },
+  {
+    name: "Update Alert Location",
+    endpoint: "/api/alerting/location",
+    method: "PATCH",
+    fields: { newLocation: "input" },
+  },
+  // Messaging Concept Routes
+  {
+    name: "Send Message",
+    endpoint: "/api/messages",
+    method: "POST",
+    fields: { to: "input", content: "input" },
+  },
+  {
+    name: "Get Messages",
+    endpoint: "/api/messages",
+    method: "GET",
+    fields: {},
+  },
+  {
+    name: "Get Conversation",
+    endpoint: "/api/messages/conversation/:user",
+    method: "GET",
+    fields: { user: "input" },
+  },
+  // Reading Concept Routes
+  {
+    name: "Label Element",
+    endpoint: "/api/reading/label",
+    method: "POST",
+    fields: { elementId: "input", label: "input" },
+  },
+  {
+    name: "Get Label",
+    endpoint: "/api/reading/label/:elementId",
+    method: "GET",
+    fields: { elementId: "input" },
+  },
+  {
+    name: "Remove Label",
+    endpoint: "/api/reading/label/remove",
+    method: "POST",
+    fields: { elementId: "input" },
+  },
+
+
 ];
 
 /*
