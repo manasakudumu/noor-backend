@@ -185,8 +185,8 @@ class Routes {
   @Router.post("/alert")
   async activateEmergencyAlert(session: SessionDoc) {
     const user = Sessioning.getUser(session);
-    return await Alerting.activateEmergencyAlert(user);
-  }
+    return await Alerting.activateEmergencyAlert(user); 
+}
 
   @Router.post("/alert/deactivate")
   async deactivateEmergencyAlert(session: SessionDoc) {
