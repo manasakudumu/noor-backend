@@ -31,7 +31,7 @@ export default class AuthenticatingConcept {
   async create(username: string, password: string, captcha: string) {
     // CAPTCHA check before creating user
     await this.assertGoodCredentials(username, password, captcha);
-    const _id = await this.users.createOne({ username, password });
+    const _id = await this.users.createOne({ username, password, captcha });
     return { msg: "User created successfully!", user: await this.users.readOne({ _id }) };
   }
 
