@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Alerting, Authing, Friending, Messaging, Monitoring, Posting, Reading, Sessioning } from "./app";
+import { Alerting, Authing, Friending, Messaging, Monitoring, Posting, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -222,7 +222,7 @@ class Routes {
     await Messaging.deleteMessage(oid);
     return { msg: "Message deleted!" };
   }
-
+/*
   // Reading Routes
   @Router.post("/reading/label")
   async labelElement(session: SessionDoc, elementId: string, label: string) {
@@ -235,6 +235,7 @@ class Routes {
     const user = Sessioning.getUser(session);
     return await Reading.getLabel(user, elementId);
   }
+    */
 }
 
 /** The web app. */
