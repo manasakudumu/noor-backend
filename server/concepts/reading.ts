@@ -1,13 +1,12 @@
 import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
-import { NotAllowedError, NotFoundError } from "./errors";
+import { NotFoundError } from "./errors";
 
-// Interface representing a document for reading elements with labels and summaries
+// Interface representing a document for reading elements with labels
 export interface ReadingDoc extends BaseDoc {
   elementId: string;
   label: string;
   postId: ObjectId;
-  summary: string;
 }
 
 /**
@@ -37,22 +36,22 @@ export default class ReadingConcept {
       await this.content.partialUpdateOne({ elementId }, { label });
       return { msg: "Element label updated successfully!" };
     } else {
-      await this.content.createOne({ elementId, label, postId: new ObjectId(), summary: '' });
+      await this.content.createOne({ elementId, label, postId: new ObjectId() });
       return { msg: "Element labeled successfully!" };
     }
   }
 
   // Get the label of an element
-  async getLabel(elementId: string) {
+  async getLabel(user: ObjectId, elementId: string) {
     const element = await this.content.readOne({ elementId });
     if (!element) {
       throw new NotFoundError("Element not found!");
     }
-    return { label: element.label };
+    return { user, label: element.label };
   }
 
   // Remove a label from an element
-  async removeLabel(elementId: string) {
+  async removeLabel(user: ObjectId, elementId: string) {
     const element = await this.content.readOne({ elementId });
     if (!element) {
       throw new NotFoundError("Element not found!");
