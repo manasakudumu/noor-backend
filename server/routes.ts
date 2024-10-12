@@ -34,10 +34,11 @@ class Routes {
   }
 
   @Router.post("/users")
-  async createUser(session: SessionDoc, username: string, password: string) {
+  async createUser(session: SessionDoc, username: string, password: string, captchaToken: string) {
     Sessioning.isLoggedOut(session);
-    return await Authing.create(username, password);
-  }
+    await Authing.verifyCaptcha(captchaToken);  
+    return await Authing.create(username, password, captchaToken);
+}
 
   @Router.patch("/users/username")
   async updateUsername(session: SessionDoc, username: string) {
