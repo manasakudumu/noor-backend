@@ -231,6 +231,7 @@ class Routes {
 
   @Router.get("/reading/label/:elementId")
   async getLabel(session: SessionDoc, elementId: string) {
+    const user = Sessioning.getUser(session);
     return await Reading.getLabel(elementId);
   }
 
