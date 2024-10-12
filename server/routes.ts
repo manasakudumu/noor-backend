@@ -234,12 +234,6 @@ class Routes {
     const user = Sessioning.getUser(session);
     return await Reading.getLabel(user, elementId);
   }
-
-  @Router.delete("/reading/label/:elementId")
-  async removeLabel(session: SessionDoc, elementId: string) {
-
-    return await Reading.removeLabel(elementId);
-  }
 }
 
 /** The web app. */
